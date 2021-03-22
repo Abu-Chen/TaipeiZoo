@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigate_graph"
+    app:startDestination="@id/areaListFragment">
+
+    <fragment
+        android:id="@+id/areaListFragment"
+        android:name="com.abu.taipeizoo.view.AreaListFragment"
+        android:label="AreaListFragment"
+        tools:layout="@layout/fragment_arealist">
+        <action
+            android:id="@+id/to_areaFragment"
+            app:destination="@id/areaFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/areaFragment"
+        android:name="com.abu.taipeizoo.view.AreaFragment"
+        android:label="AreaFragment" >
+
+        <argument
+            android:name="area"
+            android:defaultValue="@null"
+            app:argType="com.abu.taipeizoo.model.Area"
+            app:nullable="true"/>
+    </fragment>
+</navigation>
