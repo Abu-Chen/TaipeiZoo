@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.lang.reflect.Type
 
 class TaipeiDataRepo {
     companion object {
@@ -16,43 +17,53 @@ class TaipeiDataRepo {
         private const val URL_AREA = URL + AREA
         private const val URL_PLANT = URL + PLANT
 
-        private const val QUERY = "q"
         private const val DEFAULT_CONDITION = "&offset=0&limit=1000"
+        private val QUERY_CONDITION: (query: String) -> String = { "&q=$it" }
+
+        private const val RETRY_LIMIT = 3
     }
 
-    fun getZooAreaList(): ArrayList<Area>? {
+    fun getAreaList(): ArrayList<Area>? {
         val url = URL_AREA + DEFAULT_CONDITION
-        val result = downloadResults(url)
-        Log.d(TAG, "result:$result")
-        val r: Result<Area>? = try {
-            Gson().fromJson(result, object : TypeToken<Result<Area>>() {}.type)
+        val type = object : TypeToken<Result<Area>>() {}.type
+        return getResultList<Result<Area>?>(url, type)?.data?.results
+    }
+
+    fun getPlantListByArea(area: String): ArrayList<Plant>? {
+        val url = URL_PLANT + DEFAULT_CONDITION + QUERY_CONDITION(area)
+        val type = object : TypeToken<Result<Plant>>() {}.type
+        return getResultList<Result<Plant>>(url, type)?.data?.results
+    }
+
+    private fun <T> getResultList(url: String, type: Type): T? {
+        val result = downloadResults(url)?.replace("\ufeff", "")
+        //Log.d(TAG, "getResultList:$result")
+        return try {
+            Gson().fromJson(result, type)
         } catch (e: Exception) {
             e.printStackTrace()
             null
         }
-        Log.d(TAG, "areaResult:$r")
-        return r?.result?.results
-    }
-
-    fun getPlantByArea(area: String): List<Plant> {
-        return arrayListOf()
     }
 
     private fun downloadResults(url: String): String? {
         Log.d(TAG, "downloadResults:$url")
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient.Builder().build()
+        var exeCount = 0
         var result: String? = null
-        try {
-            val response = client.newCall(request).execute()
-            response?.body?.let { body ->
-                result = body.string()
-                body.close()
+        do {
+            exeCount++
+            try {
+                val response = client.newCall(request).execute()
+                response.body?.let { body ->
+                    result = body.string()
+                    body.close()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            //TODO: Error handle
-        }
+        } while (result == null && exeCount < RETRY_LIMIT)
         return result
     }
 }

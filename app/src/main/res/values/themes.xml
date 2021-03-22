@@ -3,7 +3,6 @@
     <style name="Theme.TaipeiZoo" parent="Theme.MaterialComponents.Light">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/gary_light</item>
-<!--        <item name="colorPrimaryVariant">@color/black</item>-->
         <item name="colorOnPrimary">@color/black</item>
 
         <!-- Secondary brand color. -->

@@ -1,8 +1,8 @@
 package com.abu.taipeizoo.view
 
+import android.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +12,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.abu.taipeizoo.R
 import com.abu.taipeizoo.databinding.FragmentArealistBinding
-import com.abu.taipeizoo.extension.TAG
 import com.abu.taipeizoo.model.Area
-import com.abu.taipeizoo.viewmodel.AreaListViewModel
+import com.abu.taipeizoo.viewmodel.ZooViewModel
 
 class AreaListFragment : Fragment() {
-
-    private lateinit var viewModel: AreaListViewModel
+    private lateinit var viewModel: ZooViewModel
     private lateinit var viewBinding: FragmentArealistBinding
     private lateinit var adapter: AreaListAdapter
 
@@ -28,40 +26,38 @@ class AreaListFragment : Fragment() {
     ): View {
         viewBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_arealist, container, false)
-        viewModel = ViewModelProvider(this).get(AreaListViewModel::class.java)
-        viewModel.getAreaList().observe(viewLifecycleOwner, { updateList(it) })
-        adapter = AreaListAdapter(listener)
-        viewBinding.rvListArea.adapter = adapter
-        viewBinding.rvListArea.layoutManager = LinearLayoutManager(activity)
         return viewBinding.root
     }
 
-    private val listener = object : OnAreaClickListener {
-        override fun onItemClick(area: Area) {
-            findNavController().navigate(AreaListFragmentDirections.toAreaFragment(area))
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        init()
+    }
+
+    private fun init() {
+        viewModel = ViewModelProvider(this).get(ZooViewModel::class.java)
+        viewModel.getAreaList().observe(viewLifecycleOwner, { updateList(it) })
+        adapter = AreaListAdapter(object : OnAreaClickListener {
+            override fun onItemClick(area: Area) {
+                findNavController().navigate(AreaListFragmentDirections.toAreaFragment(area))
+            }
+        })
+        viewBinding.rvListArea.adapter = adapter
+        viewBinding.rvListArea.layoutManager = LinearLayoutManager(activity)
     }
 
     private fun updateList(areas: ArrayList<Area>?) {
+        viewBinding.clProgress.visibility = View.GONE
         areas?.let {
-            for (area in areas) {
-                Log.d(TAG, "Area:${area.name}")
-            }
             adapter.areas = areas
         } ?: run {
-
+            AlertDialog.Builder(activity).setMessage("Oops! something went wrong.").show()
         }
     }
 
     override fun onStart() {
-        Log.d("ABu", "onStart()")
         super.onStart()
+        viewBinding.clProgress.visibility = View.VISIBLE
         viewModel.syncAreaList()
-    }
-
-    override fun onResume() {
-        Log.d("ABu", "onResume()")
-        super.onResume()
-        //viewModel.syncAreaList()
     }
 }

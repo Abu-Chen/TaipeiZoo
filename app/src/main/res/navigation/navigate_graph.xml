@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/areaListFragment"
         android:name="com.abu.taipeizoo.view.AreaListFragment"
-        android:label="AreaListFragment"
+        android:label="臺北市立動物園"
         tools:layout="@layout/fragment_arealist">
         <action
             android:id="@+id/to_areaFragment"
@@ -21,13 +21,31 @@
 
     <fragment
         android:id="@+id/areaFragment"
-        android:name="com.abu.taipeizoo.view.AreaFragment"
-        android:label="AreaFragment" >
+        android:name="com.abu.taipeizoo.view.AreaFragment">
 
         <argument
             android:name="area"
             android:defaultValue="@null"
             app:argType="com.abu.taipeizoo.model.Area"
-            app:nullable="true"/>
+            app:nullable="true" />
+
+        <action
+            android:id="@+id/to_plantFragment"
+            app:destination="@id/plantFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/plantFragment"
+        android:name="com.abu.taipeizoo.view.PlantFragment">
+
+        <argument
+            android:name="plant"
+            android:defaultValue="@null"
+            app:argType="com.abu.taipeizoo.model.Plant"
+            app:nullable="true" />
     </fragment>
 </navigation>

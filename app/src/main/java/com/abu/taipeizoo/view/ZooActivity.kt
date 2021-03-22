@@ -1,19 +1,17 @@
 package com.abu.taipeizoo.view
 
-import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.abu.taipeizoo.R
-import com.abu.taipeizoo.extension.TAG
-import com.abu.taipeizoo.model.Area
 
-class ZooActivity: AppCompatActivity() {
+class ZooActivity : AppCompatActivity() {
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,16 +19,13 @@ class ZooActivity: AppCompatActivity() {
 
         val host: NavHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
-        host.navController.addOnDestinationChangedListener { _, destination, _ ->
-            val dest: String = try {
-                resources.getResourceName(destination.id)
-            } catch (e: Resources.NotFoundException) {
-                Integer.toString(destination.id)
-            }
 
-            Toast.makeText(this@ZooActivity, "Navigated to $dest",
-                Toast.LENGTH_SHORT).show()
-            Log.d(TAG, "Navigated to $dest")
-        }
+        navController = host.navController
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }

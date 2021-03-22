@@ -15,7 +15,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class Result<T>(
-    @SerializedName("result") var result: Data<T>? = null,
+    @SerializedName("result") var data: Data<T>? = null,
 )
 
 data class Data<T>(

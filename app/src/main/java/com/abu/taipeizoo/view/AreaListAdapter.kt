@@ -1,6 +1,5 @@
 package com.abu.taipeizoo.view
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.abu.taipeizoo.MainApplication
 import com.abu.taipeizoo.R
-import com.abu.taipeizoo.extension.TAG
 import com.abu.taipeizoo.model.Area
 import com.bumptech.glide.Glide
 
@@ -17,7 +15,8 @@ interface OnAreaClickListener {
     fun onItemClick(area: Area)
 }
 
-class AreaViewHolder(itemView: View, clickListener: OnAreaClickListener) : RecyclerView.ViewHolder(itemView) {
+class AreaViewHolder(itemView: View, clickListener: OnAreaClickListener) :
+    RecyclerView.ViewHolder(itemView) {
     private lateinit var area: Area
     private val ivPic = itemView.findViewById<ImageView>(R.id.iv_pic)
     private val tvName = itemView.findViewById<TextView>(R.id.tv_name)
@@ -35,11 +34,12 @@ class AreaViewHolder(itemView: View, clickListener: OnAreaClickListener) : Recyc
         tvName.text = area.name
         tvInfo.text = area.info
         if (area.memo.isEmpty().not()) tvMemo.text = area.memo
-        Log.d(TAG, "area.picUrl:${area.picUrl}")
-        Glide.with(MainApplication.getContext())
-            .load(area.picUrl)
-            .centerCrop()
-            .into(ivPic)
+        if (area.picUrl.isEmpty().not()) {
+            Glide.with(MainApplication.getContext())
+                .load(area.picUrl)
+                .centerCrop()
+                .into(ivPic)
+        }
     }
 }
 
