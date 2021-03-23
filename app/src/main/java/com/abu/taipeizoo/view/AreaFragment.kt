@@ -66,12 +66,6 @@ class AreaFragment : Fragment() {
         })
         viewBinding.rvListPlant.adapter = adapter
         viewBinding.rvListPlant.layoutManager = LinearLayoutManager(activity)
-        viewBinding.rvListPlant.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                Log.d(TAG, "dy:$dy")
-            }
-        })
     }
 
     override fun onStart() {
@@ -82,7 +76,9 @@ class AreaFragment : Fragment() {
 
     private fun updateList(plants: ArrayList<Plant>?) {
         viewBinding.clProgress.visibility = View.GONE
-        plants?.let {
+        plants?.let { it ->
+            viewBinding.tvLabel.visibility = if (it.size > 0) View.VISIBLE else View.GONE
+            viewBinding.nsList.visibility = if (it.size > 0) View.VISIBLE else View.GONE
             adapter.plants = plants
         } ?: run {
             AlertDialog.Builder(activity).setMessage("Oops! something went wrong.").show()

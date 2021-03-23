@@ -1,5 +1,6 @@
 package com.abu.taipeizoo.view
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,10 @@ import com.abu.taipeizoo.MainApplication
 import com.abu.taipeizoo.R
 import com.abu.taipeizoo.model.Plant
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 
 interface OnPlantClickListener {
     fun onItemClick(plant: Plant)
@@ -36,6 +41,7 @@ class PlantViewHolder(itemView: View, clickListener: OnPlantClickListener) :
             Glide.with(MainApplication.getContext())
                 .load(plant.picUrl)
                 .centerCrop()
+                .error(android.R.drawable.ic_menu_report_image)
                 .into(ivPic)
         }
     }

@@ -37,6 +37,7 @@ class AreaViewHolder(itemView: View, clickListener: OnAreaClickListener) :
         if (area.picUrl.isEmpty().not()) {
             Glide.with(MainApplication.getContext())
                 .load(area.picUrl)
+                .error(android.R.drawable.ic_menu_report_image)
                 .centerCrop()
                 .into(ivPic)
         }
